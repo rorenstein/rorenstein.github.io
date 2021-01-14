@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./icons/favicon-16x16.png">
+    <link rel="manifest" href="./icons/site.webmanifest">
+    <link rel="mask-icon" href="./icons/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#00a300">
     <meta name="theme-color" content="#ffffff">
 </head>
@@ -19,49 +20,109 @@
         text-decoration: none;
         display: inline-block;
         margin: 4px 2px;
-        cursor: pointer;}
-    .filetype, .fname, .txtbox, .btn{
+        cursor: pointer;
+    }
+
+    .filetype,
+    .fname,
+    .txtbox,
+    .btn,
+    #counter {
         font-family: sans-serif;
         font-size: medium;
     }
-    .txtbox, .btn {
+
+    .txtbox,
+    .btn {
         border: none;
+    }
+
+    .txtbox {
+        outline: none;
+        left: 10px;
+        top: 10px;
+        width: calc(100vw - 20px);
+        height: calc(100vh - (81px));
+        resize: none;
+    }
+
+    a:focus {
+        border: #000000;
     }
 
 </style>
 
 <body>
 
-    <input type="text" id="fname" name="fname" class="fname" placeholder="File name">
-    <select name="filetype" id="filetype" class="filetype">
-        <option value="txt">txt</option>
-        <option value="md">md</option>
-        <option value="csv">csv</option>
-    </select>
-    <a id="saveToFile" class="btn btn-primary">Save as...</a>
-    <br>
-    <textarea type="text" id="txtin" name="txtin" class="txtbox" rows="20" cols="100" placeholder="write here..."></textarea>
-
-    <script
-  src="https://code.jquery.com/jquery-3.5.1.js"
-  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
-  crossorigin="anonymous"></script>
+    <div><textarea tabindex="1" type="text" id="txtin" name="txtin" class="txtbox" placeholder="Write here..." autofocus></textarea></div>
+    <div> 
+        <input tabindex="2" type="text" id="fname" name="fname" class="fname" placeholder="File name">
+        <select tabindex="3" name="filetype" id="filetype" class="filetype">
+            <option value="txt">txt</option>
+            <option value="md">md</option>
+            <option value="csv">csv</option>
+        </select>
+        <a tabindex="4" id="saveToFile" class="btn btn-primary">Save as...</a>
+        <div id="counter">Characters: <span id="characterCount">0</span> Words: <span id="wordCount">0</span></div>
+    </div>
+    
+    
 
     <script>
-        $(function() {
-          $('#saveToFile').click(function(e) {
-            var data = document.getElementById('txtin').value;
-            var ftype = document.getElementById('filetype').value;
-            var filename = document.getElementById('fname').value;
-            var data = 'data:application/'+ftype+';charset=utf-8,' + encodeURIComponent(data);
-            var el = e.currentTarget;
-            el.href = data;
-            el.target = '_blank';
-            el.download = filename+'.'+ftype;
-            
-          });
+        var t = document.getElementById('txtin').autofocus;
+        "use strict";
+        var input = document.querySelectorAll('textarea')[0],
+            characterCount = document.querySelector('#characterCount'),
+            wordCount = document.querySelector('#wordCount');
+
+        input.addEventListener('keyup', function () {
+            console.clear();
+            characterCount.innerHTML = input.value.length;
+            var words = input.value.match(/\b[-?(\w+)?]+\b/gi);
+            if (words) {
+                wordCount.innerHTML = words.length;
+            } else {
+                wordCount.innerHTML = 0;
+            }
         });
-        </script>
+    </script>
+
+    <script src="http://code.jquery.com/jquery.js"></script>
+
+    <script>
+        
+        $(function () {
+            
+            $('a').click(function (e) {
+                var data = document.getElementById('txtin').value;
+                var ftype = document.getElementById('filetype').value;
+                var filename = document.getElementById('fname').value;
+                var data = 'data:application/' + ftype + ';charset=utf-8,' + encodeURIComponent(data);
+                var el = e.currentTarget;
+                el.href = data;
+                el.target = '_blank';
+                el.download = filename + '.' + ftype;
+
+            });
+            $('a').keyup(function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    document.getElementById("saveToFile").click(function (e) {
+                var data = document.getElementById('txtin').value;
+                var ftype = document.getElementById('filetype').value;
+                var filename = document.getElementById('fname').value;
+                var data = 'data:application/' + ftype + ';charset=utf-8,' + encodeURIComponent(data);
+                var el = e.currentTarget;
+                el.href = data;
+                el.target = '_blank';
+                el.download = filename + '.' + ftype;
+
+            });
+                }
+            });
+        });
+    </script>
 
 </body>
+
 </html>
